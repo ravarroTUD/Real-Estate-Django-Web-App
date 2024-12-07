@@ -17,21 +17,23 @@
         redisplay: function(id) {
             // Repopulate HTML select box from cache
             var box = document.getElementById(id);
-            var node;
-            $(box).empty(); // clear all options
-            var new_options = box.outerHTML.slice(0, -9);  // grab just the opening tag
+            if (!box) return;
+            // clear all options
+            while (box.firstChild) {
+                box.removeChild(box.firstChild)
+            }
             var cache = SelectBox.cache[id];
             for (var i = 0, j = cache.length; i < j; i++) {
-                node = cache[i];
+                var node = cache[i];
                 if (node.displayed) {
-                    var new_option = new Option(node.text, node.value, false, false);
+                    var new_option = document.createElement('option');  // grab just the opening tag
                     // Shows a tooltip when hovering over the option
-                    new_option.setAttribute("title", node.text);
-                    new_options += new_option.outerHTML;
+                    new_option.value = node.value;
+                    new_option.text = node.text;
+                    new_option.title = node.text;
+                    box.appendChild(new_option);
                 }
             }
-            new_options += '</select>';
-            box.outerHTML = new_options;
         },
         filter: function(id, text) {
             // Redisplay the HTML select box, displaying only the choices containing ALL
